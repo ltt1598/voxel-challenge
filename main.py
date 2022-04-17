@@ -2,7 +2,7 @@ from scene import Scene
 import taichi as ti
 from taichi.math import *
 
-night_mode = False
+night_mode = True
 exposure = 1.0 + night_mode * 4.0
 foam_material = 1.0 + night_mode * 1
 foam_color = vec3(0.7, 0.8, 1.0)
@@ -30,13 +30,13 @@ def create_wave(pos, radius, color, portion, flipped):
         offset = I
         offset[0] *=  1 - flipped * 2        
         if theta >= 0 and theta <= portion:
-            if abs(uv.norm() - 0.95) < 0.05:
+            if abs(uv.norm() - 0.95) < 0.05 + 0.05 *ti.random():
                 if 1 - ti.random()**2 < theta / portion - 0.1:
                     scene.set_voxel(pos + offset, foam_material, foam_color)
                 else:
                     scene.set_voxel(pos + offset, 1, color)
         elif theta <= 0 and theta >= -1:
-            if uv.norm() > 0.9:
+            if uv.norm() > 0.9 - 0.05 *ti.random():
                 scene.set_voxel(pos + offset, 1, color)
 
 @ti.func
